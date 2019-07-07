@@ -1,5 +1,6 @@
 package com.by.service;
 
+import com.by.Vo.RoleVO;
 import com.by.Vo.User3VO;
 import com.by.model.*;
 
@@ -42,4 +43,6 @@ public interface UserService {
     Set<String> findPermissionByUserName(String username);
 
     List<User> finduserAll();
+
+    List<RoleVO> roleAndPermission(Map<String, Object> pagemap);
 }

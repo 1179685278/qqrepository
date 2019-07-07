@@ -28,4 +28,14 @@
       </if>
     </trim>
   </insert>
+
+  <insert id="addpers" parameterType="com.by.model.RpVO">
+        insert into rp_id(role_id,permission_id) values
+        <foreach collection="rpvos.permissions" item="permissionId" separator=",">
+            <if test="permissionId != null">
+              (#{rpvos.roleId},#{permissionId})
+            </if>
+        </foreach>
+  </insert>
+
 </mapper>

@@ -58,7 +58,7 @@ To change this template use File | Settings | File Templates.--%>
                     <a class="" href="javascript:;">角色</a>
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;" class="side-nav-class"
-                               data-title="角色列表" data-id="jsgl" data-url="http://localhost:8081/permission/topermissionpage">角色列表</a></dd>
+                               data-title="角色列表" data-id="jsgl" data-url="http://localhost:8081/permission.jsp">角色列表</a></dd>
                     </dl>
                 </li>
                 </shiro:hasRole>

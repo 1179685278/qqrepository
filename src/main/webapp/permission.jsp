@@ -21,22 +21,38 @@ To change this template use File | Settings | File Templates.--%>
 <body>
 <table class="layui-hide" id="test" lay-filter="userTableFilter"></table>
 
-<div style="display: none;" id="giveRole">
+<div style="display: none;" id="givePermission">
     <form class="layui-form">
-        <input type="hidden" name="userId" id="userId">
+        <input type="hidden" name="roleId" id="roleId">
         <div class="layui-form-item">
-            <label class="layui-form-label">角色：</label>
+            <label class="layui-form-label">权限：</label>
             <div class="layui-input-block" id="rolesId">
 
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="giveRoleSubmit">立即提交</button>
+                <button class="layui-btn" lay-submit lay-filter="givePermissionSubmit">立即提交</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
             </div>
         </div>
     </form>
+</div>
+<div style="display: none;" id="addpage">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">角色：</label>
+            <div class="layui-input-block" >
+                <br>
+                <input  type="text" name="roleName"/>
+            </div>
+        </div>
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="addpageSubmit">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </form>
+
 </div>
 
 <script>
@@ -46,29 +62,24 @@ To change this template use File | Settings | File Templates.--%>
         var layer = layui.layer;
         var $ =layui.jquery;
         var active = {
-            "showRoleByUserId":function (userId) {
-                $.get("/quan/quan",{'userId':userId},function (data) {
+            "showRoleByRoleId":function (roleId) {
+                $.get("/role/quan",{'roleId':roleId},function (data) {
 
-                    var roles = data.roles;
+                    var permissions = data.permissions;
 
-                    var roleids = data.roleids;
+                    var permissionids = data.permissionids;
 
 
                     $("#rolesId").empty();//清除当前元素中的对象
 
-                    for (var i=0;i<roles.length;i++){
+                    for (var i=0;i<permissions.length;i++){
                         var che = '';
-                        if(roleids.indexOf(roles[i].roleId)>-1){
+                        if(permissionids.indexOf(permissions[i].permissionId)>-1){
                             che = 'checked';
                         }
-                        $("#rolesId").append('<input type="checkbox" '+che+' name="roles['+i+']" value="'+roles[i].roleId+'" title="'+roles[i].roleName+'"><br>')
+                        $("#rolesId").append('<input type="checkbox" '+che+' name="permissions['+i+']" value="'+permissions[i].permissionId+'" title="'+permissions[i].permissionName+'"><br>')
 
-                                        /*
-                                        <input type="checkbox" name="roles" value="1" title="神"><br>
-                                        <input type="checkbox" name="roles" value="2"  title="狼"><br>
-                                        <input type="checkbox" name="roles" value="3"  title="民"><br>
 
-                                        */
 
                     }
                     form.render(); //更新全部
@@ -78,11 +89,11 @@ To change this template use File | Settings | File Templates.--%>
             }
         }
         //监听提交
-        form.on('submit(giveRoleSubmit)', function(data){
+        form.on('submit(givePermissionSubmit)', function(data){
             console.log(data.field);//角色ids
 
             //ajax赋角色
-            $.post("/user/userRole",data.field,function(data){
+            $.post("/role/userRole",data.field,function(data){
                 if(data.success){
 
                     table.reload("test", {page:{curr:1}});//从第一页加载
@@ -98,19 +109,20 @@ To change this template use File | Settings | File Templates.--%>
         table.render({
             elem: '#test'
             ,height:'full-60'
-            ,url:'/user/list'
+            ,url:'/user/list2'
             ,page:true //开启分页
             ,toolbar:'#tableToolBar'
             ,cols: [[ //表头
                 {type: 'checkbox', fixed: 'left'}//复选框
-                ,{field:'userId',title: 'ID',sort: true, fixed: 'left'}
-                ,{field:'userName',title: '用户名'}
-                ,{field:'roles',title: '角色名'
+                ,{field:'roleId',title: 'ID',sort: true, fixed: 'left'}
+                ,{field:'roleName',title: '角色名'}
+                ,{field:'permissions',title: '权限名'
                     ,templet: function (d) {
-                        var roles = d.roles;
+                    console.log(d)
+                        var permissions = d.permissions;
                         var str = '';
-                        for (var i = 0; i <roles.length ; i++) {
-                            str += ',' + roles[i].roleName;
+                        for (var i = 0; i <permissions.length ; i++) {
+                            str += ',' + permissions[i].permissionName;
                         }
                         str = str.substring(1);
                         return str;
@@ -129,7 +141,7 @@ To change this template use File | Settings | File Templates.--%>
             var tr= obj.tr;
             if (layEvent == 'del'){
                 layer.confirm('真的删除吗',function(index) {
-                    $.post('/user/delete/'+data.userId,{'_method':'delete'},function(data) {
+                    $.post('/role/delete/'+data.roleId,{'_method':'delete'},function(data) {
                         if (data == 'success'){
                             obj.del();
                         }else{
@@ -138,18 +150,18 @@ To change this template use File | Settings | File Templates.--%>
                     },'text');
                     layer.close(index);
                 })
-            }else if(layEvent === 'giveRole'){
+            }else if(layEvent === 'givePermission'){
 
-                var userId = data.userId;
-                $("#userId").val(userId);
+                var roleId = data.roleId;
+                $("#roleId").val(roleId);
 
-               active.showRoleByUserId(userId);
+               active.showRoleByRoleId(roleId);
 
 
                 layer.open({
                     type: 1,
-                    title:"赋角色",
-                    content: $("#giveRole") //这里content是一个普通的String
+                    title:"赋权限",
+                    content: $("#givePermission") //这里content是一个普通的String
                     ,area: ['500px', '300px']
                     ,icon: 0
                 });
@@ -160,10 +172,35 @@ To change this template use File | Settings | File Templates.--%>
             var checkStatus = table.checkStatus(obj.config.id);
             switch(obj.event){
                 case 'edit':
-                    layer.msg('登出后去注册');
+                    layer.open({
+                        type: 1,
+                        title:"增加",
+                        content: $("#addpage") //这里content是一个普通的String
+                        ,area: ['500px', '300px']
+                        ,icon: 0
+                    });
                     break;
 
             };
+        });
+        //监听提交
+        form.on('submit(addpageSubmit)', function(data){
+            console.log(data.field);//角色ids
+            console.log(data.field.roleName);//角色ids
+
+            //ajax增加角色
+            $.post("/role/addrole",{"roleName":data.field.roleName},function(data){
+                    if(data.success){
+
+                    table.reload("test", {page:{curr:1}});//从第一页加载
+
+                }else{
+                    layer.msg('失败！');
+                }
+                layer.closeAll();
+            },"json")
+
+            return false;//防止表单自动提交
         });
 
         function tabAdd(title,url,id){
@@ -196,7 +233,7 @@ To change this template use File | Settings | File Templates.--%>
 
 <script type="text/html" id="userToolBar">
     <shiro:hasRole name="user">
-    <a class="layui-btn layui-btn-xs" lay-event="giveRole">赋角色</a>
+    <a class="layui-btn layui-btn-xs" lay-event="givePermission">赋权限</a>
     </shiro:hasRole>
     <shiro:hasRole name="admin">
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>

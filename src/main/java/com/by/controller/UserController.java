@@ -1,6 +1,7 @@
 package com.by.controller;
 
 
+import com.by.Vo.RoleVO;
 import com.by.Vo.User3VO;
 import com.by.model.UrVO;
 import com.by.model.User;
@@ -52,6 +53,29 @@ public class UserController {
         map.put("msg","");
         map.put("count",50);
         map.put("data",users);
+
+
+        return map;
+    }
+
+
+    @ResponseBody
+    @RequestMapping("list2")
+    public Map<String,Object> list2(Integer page,Integer limit){
+
+        //PageHelper.startPage(page,limit);
+        Map<String, Object> pagemap = new HashMap<>();
+        pagemap.put("start",(page-1)*limit);
+        pagemap.put("limit",limit);
+        List<RoleVO> roles =userService.roleAndPermission(pagemap);
+
+        //PageInfo<User3VO> info = new PageInfo<>(users);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("code",0);
+        map.put("msg","");
+        map.put("count",50);
+        map.put("data",roles);
 
 
         return map;

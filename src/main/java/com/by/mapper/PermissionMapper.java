@@ -22,4 +22,7 @@ public interface PermissionMapper {
 
     @Select("select * from t_permission")
     List<Permission> findAll();
+
+    @Select("select permission_id from rp_id where role_id = #{roleId}")
+    List<Integer> permissionId(Integer roleId);
 }

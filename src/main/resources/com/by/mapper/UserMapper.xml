@@ -86,7 +86,7 @@
         where u.user_name = #{username}
     </select>
 
-  <!--三表-->
+  <!--三表:用户-角色-->
   <select id="findAll" resultMap="findAllMap">
     select u.user_id user_id,u.user_name user_name,r.role_name role_name
     from
@@ -102,6 +102,20 @@
       </collection>
   </resultMap>
 
+  <!--三表:角色-权限-->
+  <select id="roleAndPermission" resultMap="roleAndPermissionMap">
+        select r.role_id role_id,r.role_name role_name,p.permission_name permission_name
+        from
+        (select * from t_role limit #{start},#{limit}) r left join rp_id rp on r.role_id = rp.role_id
+        left join t_permission p on rp.permission_id = p.permission_id
+  </select>
+
+  <resultMap id="roleAndPermissionMap" type="com.by.Vo.RoleVO" autoMapping="true">
+    <id column="role_id" property="roleId"></id>
+
+    <collection property="permissions" ofType="com.by.model.Permission" autoMapping="true">
+    </collection>
+  </resultMap>
 
 
 </mapper>

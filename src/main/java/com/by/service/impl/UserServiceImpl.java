@@ -1,5 +1,6 @@
 package com.by.service.impl;
 
+import com.by.Vo.RoleVO;
 import com.by.Vo.User3VO;
 import com.by.mapper.RoleMapper;
 import com.by.mapper.UrMapper;
@@ -66,7 +67,7 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> map = new HashMap<>();
         //查询全部的roles
         List<Role> roles = roleMapper.findAll();
-        //通过id查role对象
+        //通过id查role对象,默认选中
         List<Integer> roleids = userMapper.roleId(userId);
 
         map.put("roles",roles);
@@ -117,6 +118,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> finduserAll() {
         return userMapper.finduserAll();
+    }
+
+    @Override
+    public List<RoleVO> roleAndPermission(Map<String, Object> pagemap) {
+        return userMapper.roleAndPermission(pagemap);
     }
 
 

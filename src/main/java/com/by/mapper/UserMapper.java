@@ -1,5 +1,6 @@
 package com.by.mapper;
 
+import com.by.Vo.RoleVO;
 import com.by.model.User;
 import com.by.Vo.User3VO;
 import com.by.model.UserVO;
@@ -30,7 +31,7 @@ public interface UserMapper {
 
     List<User3VO> findAll(Map<String, Object> pagemap);
 
-    @Select("select role_id from ur_id where user_id = #{iserId}")
+    @Select("select role_id from ur_id where user_id = #{userId}")
     List<Integer> roleId(Integer userId);
 
     @Select("select * from t_user where user_name = #{username}")
@@ -43,4 +44,6 @@ public interface UserMapper {
 
     @Select("select * from t_user")
     List<User> finduserAll();
+
+    List<RoleVO> roleAndPermission(Map<String, Object> pagemap);
 }
